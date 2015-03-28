@@ -98,7 +98,7 @@ Shader "GLSLToon" {
                >= _DiffuseThreshold)
             {
                //fragmentColor = vec3(_LightColor0) * vec3(_Color);
-               fragmentColor = vec3(texture2D(_MainTex, vec2(TextureCoordinate))); //Svona verður diffuse hlutinn aðeins of bjartur, eins og i flat shadernum...
+               fragmentColor = vec3(_LightColor0) * vec3(_Color) * vec3(texture2D(_MainTex, vec2(TextureCoordinate))); //Svona verður diffuse hlutinn aðeins of bjartur, eins og i flat shadernum...
             }
  
             // higher priority: outline
@@ -226,5 +226,5 @@ Shader "GLSLToon" {
    } 
    // The definition of a fallback shader should be commented out 
    // during development:
-   Fallback "Specular"
+   //Fallback "Specular"
 }
