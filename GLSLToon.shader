@@ -89,20 +89,23 @@ Shader "GLSLToon" {
                lightDirection = normalize(vertexToLightSource);
             }
  
-            // default: unlit 
-            vec3 fragmentColor = vec3(texture2D(_MainTex, vec2(TextureCoordinate))); 
+            // default: unlit
+            //vec3 fragmentColor = vec3(_UnlitColor); 
+            vec3 fragmentColor = vec3(_UnlitColor) * vec3(texture2D(_MainTex, vec2(TextureCoordinate))); 
  
             // low priority: diffuse illumination
             if (attenuation * max(0.0, dot(normalDirection, lightDirection)) 
                >= _DiffuseThreshold)
             {
-               fragmentColor = vec3(_LightColor0) * vec3(_Color); 
+               //fragmentColor = vec3(_LightColor0) * vec3(_Color);
+               fragmentColor = vec3(texture2D(_MainTex, vec2(TextureCoordinate))); //Svona verður diffuse hlutinn aðeins of bjartur, eins og i flat shadernum...
             }
  
             // higher priority: outline
             if (dot(viewDirection, normalDirection) 
                < mix(_UnlitOutlineThickness, _LitOutlineThickness, max(0.0, dot(normalDirection, lightDirection))))
             {
+               //fragmentColor = vec3(_LightColor0) * vec3(_OutlineColor); 
                fragmentColor = vec3(_LightColor0) * vec3(_OutlineColor); 
             }
  
@@ -112,9 +115,8 @@ Shader "GLSLToon" {
                && attenuation *  pow(max(0.0, dot(reflect(-lightDirection, normalDirection), viewDirection)), _Shininess) > 0.5) 
                // more than half highlight intensity? 
             {
-               fragmentColor = _SpecColor.a 
-			                   * vec3(_LightColor0) * vec3(_SpecColor)
-			                   + (1.0 - _SpecColor.a) * fragmentColor;
+               //fragmentColor = _SpecColor.a * vec3(_LightColor0) * vec3(_SpecColor) + (1.0 - _SpecColor.a) * fragmentColor;
+               fragmentColor = _SpecColor.a * vec3(_LightColor0) * vec3(_SpecColor) + (1.0 - _SpecColor.a) * fragmentColor * vec3(texture2D(_MainTex, vec2(TextureCoordinate)));
             }
  
             gl_FragColor = vec4(fragmentColor, 1.0);
